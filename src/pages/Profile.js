@@ -294,12 +294,13 @@ const Profile = () => {
                 icon: "🎯"
               }
             ].map((advantage, index) => (
-              <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-kopin-teal/10 hover:shadow-xl transition-shadow duration-300">
+              <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-kopin-teal/10 hover:shadow-xl transition-shadow duration-300 group">
                 <div className="flex items-start space-x-4">
                   <div className="text-4xl flex-shrink-0">{advantage.icon}</div>
                   <div>
-                    <h4 className="text-xl font-semibold text-kopin-green-dark mb-3">
-                      {advantage.title}
+                    <h4 className="text-xl font-semibold text-kopin-green-dark mb-3 relative">
+                      <span className="relative z-10">{advantage.title}</span>
+                      <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-kopin-teal to-kopin-green rounded-full group-hover:w-full transition-all duration-500 ease-out"></div>
                     </h4>
                     <p className="text-gray-600 leading-relaxed">
                       {advantage.description}
@@ -324,47 +325,7 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "EduNation Fest",
-                description: "Pameran pendidikan Islam internasional tahunan",
-                icon: "🎪"
-              },
-              {
-                title: "International Training Series",
-                description: "Pelatihan guru dan manajemen pendidikan",
-                icon: "📚"
-              },
-              {
-                title: "Collaborative Research Hub",
-                description: "Riset lintas lembaga & publikasi global",
-                icon: "🔬"
-              },
-              {
-                title: "Student & Teacher Exchange",
-                description: "Pertukaran akademik ke luar negeri",
-                icon: "✈️"
-              },
-              {
-                title: "Islamic Education Summit",
-                description: "Forum internasional pendidikan Islam",
-                icon: "🏛️"
-              }
-            ].map((program, index) => (
-              <div key={index} className="bg-kopin-accent rounded-2xl p-6 shadow-lg border border-kopin-teal/10 hover:shadow-xl transition-shadow duration-300">
-                <div className="text-center">
-                  <div className="text-4xl mb-4">{program.icon}</div>
-                  <h4 className="text-xl font-semibold text-kopin-green-dark mb-3">
-                    {program.title}
-                  </h4>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    {program.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ProgramCards />
         </div>
       </section>
 
@@ -868,6 +829,133 @@ const BenefitFlashcards = () => {
             {/* Floating Animation on Hover */}
             <div className={`absolute -inset-1 bg-gradient-to-r from-kopin-teal to-kopin-green rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm ${
               !isFlipped ? 'group-hover:animate-pulse' : ''
+            }`} />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+// ProgramCards Component with Professional Diagonal Animation
+const ProgramCards = () => {
+  const [hoveredCard, setHoveredCard] = useState(null);
+
+  const programs = [
+    {
+      title: "EduNation Fest",
+      description: "Pameran pendidikan Islam internasional tahunan",
+      icon: "🎪",
+      bgPattern: "radial-gradient(circle at 20% 50%, rgba(20, 184, 166, 0.2) 0%, transparent 50%)"
+    },
+    {
+      title: "International Training Series",
+      description: "Pelatihan guru dan manajemen pendidikan",
+      icon: "📚",
+      bgPattern: "radial-gradient(circle at 80% 20%, rgba(5, 150, 105, 0.2) 0%, transparent 50%)"
+    },
+    {
+      title: "Collaborative Research Hub",
+      description: "Riset lintas lembaga & publikasi global",
+      icon: "🔬",
+      bgPattern: "radial-gradient(circle at 50% 80%, rgba(20, 184, 166, 0.25) 0%, transparent 50%)"
+    },
+    {
+      title: "Student & Teacher Exchange",
+      description: "Pertukaran akademik ke luar negeri",
+      icon: "✈️",
+      bgPattern: "radial-gradient(circle at 30% 30%, rgba(5, 150, 105, 0.25) 0%, transparent 50%)"
+    },
+    {
+      title: "Islamic Education Summit",
+      description: "Forum internasional pendidikan Islam",
+      icon: "🏛️",
+      bgPattern: "radial-gradient(circle at 70% 70%, rgba(20, 184, 166, 0.3) 0%, transparent 50%)"
+    }
+  ];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {programs.map((program, index) => {
+        const isHovered = hoveredCard === index;
+        
+        return (
+          <div
+            key={index}
+            className="relative group cursor-pointer"
+            onMouseEnter={() => setHoveredCard(index)}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
+            {/* Main Card Container */}
+            <div className="relative overflow-hidden rounded-2xl h-64 transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl">
+              
+              {/* Background */}
+              <div 
+                className="absolute inset-0 bg-kopin-accent transition-all duration-300 ease-out"
+                style={{ 
+                  background: isHovered ? program.bgPattern : '#f0fdf4'
+                }}
+              />
+
+              {/* Professional Diagonal Animation */}
+              <div className={`absolute inset-0 bg-gradient-to-br from-kopin-teal/20 to-kopin-green/20 transform transition-all duration-500 ease-out ${
+                isHovered ? 'translate-x-0 translate-y-0 opacity-100' : 'translate-x-full translate-y-full opacity-0'
+              }`} 
+              style={{
+                clipPath: 'polygon(0 100%, 100% 0, 100% 100%)'
+              }} />
+
+              {/* Diagonal Sweep Effect */}
+              <div className={`absolute inset-0 bg-gradient-to-br from-white/30 to-transparent transform transition-all duration-700 ease-out ${
+                isHovered ? 'translate-x-0 translate-y-0 opacity-100' : '-translate-x-full -translate-y-full opacity-0'
+              }`}
+              style={{
+                clipPath: 'polygon(0 0, 50% 0, 0 50%)'
+              }} />
+
+              {/* Content Container */}
+              <div className="relative z-10 p-6 h-full flex flex-col justify-center text-kopin-green-dark">
+                
+                {/* Icon */}
+                <div className="flex justify-center mb-4">
+                  <div className={`text-6xl transition-all duration-300 ease-out transform ${
+                    isHovered ? 'scale-110 rotate-6' : 'scale-100 rotate-0'
+                  }`}>
+                    {program.icon}
+                  </div>
+                </div>
+
+                {/* Title */}
+                <div className="text-center mb-4">
+                  <h4 className={`text-xl font-bold transition-all duration-300 ${
+                    isHovered ? 'text-kopin-teal transform -translate-y-1' : ''
+                  }`}>
+                    {program.title}
+                  </h4>
+                </div>
+
+                {/* Description */}
+                <div className="text-center">
+                  <p className="text-sm leading-relaxed">
+                    {program.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Professional Border Effect */}
+              <div className={`absolute inset-0 rounded-2xl border-2 transition-all duration-300 ${
+                isHovered ? 'border-kopin-teal/50 shadow-lg shadow-kopin-teal/20' : 'border-kopin-teal/20'
+              }`} />
+
+              {/* Corner Accent */}
+              <div className={`absolute top-4 right-4 w-2 h-2 bg-kopin-teal rounded-full transition-all duration-300 ${
+                isHovered ? 'scale-150 opacity-100' : 'scale-100 opacity-60'
+              }`} />
+            </div>
+
+            {/* Professional Shadow */}
+            <div className={`absolute -inset-1 bg-gradient-to-br from-kopin-teal/10 to-kopin-green/10 rounded-2xl blur-sm transition-all duration-300 -z-10 ${
+              isHovered ? 'opacity-100 scale-105' : 'opacity-0 scale-100'
             }`} />
           </div>
         );
