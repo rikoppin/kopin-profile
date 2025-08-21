@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Profile = () => {
   return (
@@ -170,58 +170,7 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {[
-              {
-                title: "Integrity",
-                subtitle: "Integritas",
-                description: "Kejujuran & akuntabilitas",
-                icon: "🤝",
-                color: "bg-blue-500"
-              },
-              {
-                title: "Excellence",
-                subtitle: "Keunggulan",
-                description: "Mutu & kualitas global",
-                icon: "⭐",
-                color: "bg-yellow-500"
-              },
-              {
-                title: "Collaboration",
-                subtitle: "Kolaborasi",
-                description: "Kerja sama lintas lembaga/negara",
-                icon: "🌐",
-                color: "bg-green-500"
-              },
-              {
-                title: "Innovation",
-                subtitle: "Inovasi",
-                description: "Kreativitas & riset",
-                icon: "💡",
-                color: "bg-purple-500"
-              },
-              {
-                title: "Islamic Character",
-                subtitle: "Karakter Islami",
-                description: "Nilai & akhlak Islami",
-                icon: "🕌",
-                color: "bg-teal-500"
-              }
-            ].map((value, index) => (
-              <div key={index} className="text-center p-6 rounded-2xl border border-kopin-teal/20 hover:shadow-lg transition-shadow duration-300 bg-kopin-accent">
-                <div className="text-4xl mb-4">{value.icon}</div>
-                <h4 className="text-lg font-bold text-kopin-green-dark mb-1">
-                  {value.title}
-                </h4>
-                <h5 className="text-md font-semibold text-kopin-teal mb-2">
-                  {value.subtitle}
-                </h5>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {value.description}
-                </p>
-              </div>
-            ))}
-          </div>
+          <ValuesSlider />
         </div>
       </section>
 
@@ -616,6 +565,225 @@ const Profile = () => {
           </div>
         </div>
       </section>
+    </div>
+  );
+};
+
+// ValuesSlider Component
+const ValuesSlider = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+
+  const values = [
+    {
+      title: "Integrity",
+      subtitle: "Integritas",
+      description: "Kejujuran & akuntabilitas dalam setiap tindakan dan keputusan",
+      icon: "🤝",
+      color: "from-blue-500 to-blue-600"
+    },
+    {
+      title: "Excellence",
+      subtitle: "Keunggulan",
+      description: "Mutu & kualitas global yang berkelanjutan",
+      icon: "⭐",
+      color: "from-yellow-500 to-yellow-600"
+    },
+    {
+      title: "Collaboration",
+      subtitle: "Kolaborasi",
+      description: "Kerja sama lintas lembaga dan negara",
+      icon: "🌐",
+      color: "from-green-500 to-green-600"
+    },
+    {
+      title: "Innovation",
+      subtitle: "Inovasi",
+      description: "Kreativitas & riset untuk kemajuan pendidikan",
+      icon: "💡",
+      color: "from-purple-500 to-purple-600"
+    },
+    {
+      title: "Islamic Character",
+      subtitle: "Karakter Islami",
+      description: "Nilai & akhlak Islami sebagai fondasi",
+      icon: "🕌",
+      color: "from-teal-500 to-teal-600"
+    }
+  ];
+
+  // Auto slide effect
+  useEffect(() => {
+    if (!isAutoPlay) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % values.length);
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlay, values.length]);
+
+  const handleSlideChange = (index) => {
+    setCurrentIndex(index);
+    setIsAutoPlay(false);
+    // Resume auto play after 3 seconds
+    setTimeout(() => setIsAutoPlay(true), 3000);
+  };
+
+  const getCardStyle = (index) => {
+    const diff = index - currentIndex;
+    const totalCards = values.length;
+    
+    // Normalize diff to handle circular array
+    let normalizedDiff = diff;
+    if (Math.abs(diff) > totalCards / 2) {
+      normalizedDiff = diff > 0 ? diff - totalCards : diff + totalCards;
+    }
+
+    if (normalizedDiff === 0) {
+      // Center card
+      return {
+        transform: 'translateX(0%) scale(1) rotateY(0deg)',
+        zIndex: 30,
+        opacity: 1,
+        filter: 'brightness(1)'
+      };
+    } else if (normalizedDiff === 1) {
+      // Right card
+      return {
+        transform: 'translateX(80%) scale(0.8) rotateY(-25deg)',
+        zIndex: 20,
+        opacity: 0.7,
+        filter: 'brightness(0.8)'
+      };
+    } else if (normalizedDiff === -1) {
+      // Left card
+      return {
+        transform: 'translateX(-80%) scale(0.8) rotateY(25deg)',
+        zIndex: 20,
+        opacity: 0.7,
+        filter: 'brightness(0.8)'
+      };
+    } else if (normalizedDiff === 2 || normalizedDiff === -3) {
+      // Far right silhouette
+      return {
+        transform: 'translateX(140%) scale(0.6) rotateY(-45deg)',
+        zIndex: 10,
+        opacity: 0.4,
+        filter: 'brightness(0.6)'
+      };
+    } else if (normalizedDiff === -2 || normalizedDiff === 3) {
+      // Far left silhouette
+      return {
+        transform: 'translateX(-140%) scale(0.6) rotateY(45deg)',
+        zIndex: 10,
+        opacity: 0.4,
+        filter: 'brightness(0.6)'
+      };
+    } else {
+      // Hidden cards
+      return {
+        transform: 'translateX(200%) scale(0.4)',
+        zIndex: 0,
+        opacity: 0,
+        filter: 'brightness(0.5)'
+      };
+    }
+  };
+
+  return (
+    <div className="relative w-full h-96 overflow-hidden">
+      {/* Slider Container */}
+      <div className="relative w-full h-full flex items-center justify-center perspective-1000">
+        {values.map((value, index) => {
+          const style = getCardStyle(index);
+          const isCenter = index === currentIndex;
+          
+          return (
+            <div
+              key={index}
+              className={`absolute w-80 h-80 cursor-pointer transition-all duration-700 ease-out preserve-3d ${
+                isCenter ? 'hover:scale-105' : 'hover:scale-90'
+              }`}
+              style={style}
+              onClick={() => handleSlideChange(index)}
+            >
+              <div className={`w-full h-full rounded-2xl p-8 shadow-2xl border-2 transform transition-all duration-500 ${
+                isCenter 
+                  ? 'bg-white border-kopin-teal/30 shadow-kopin-teal/20' 
+                  : 'bg-kopin-accent border-kopin-teal/10'
+              }`}>
+                <div className="text-center h-full flex flex-col justify-center">
+                  <div className={`text-6xl mb-6 transition-all duration-500 ${
+                    isCenter ? 'animate-bounce' : ''
+                  }`}>
+                    {value.icon}
+                  </div>
+                  <h4 className={`text-2xl font-bold mb-2 transition-all duration-500 ${
+                    isCenter ? 'text-kopin-green-dark' : 'text-kopin-green'
+                  }`}>
+                    {value.title}
+                  </h4>
+                  <h5 className={`text-lg font-semibold mb-4 transition-all duration-500 ${
+                    isCenter ? 'text-kopin-teal' : 'text-kopin-teal/70'
+                  }`}>
+                    {value.subtitle}
+                  </h5>
+                  <p className={`text-sm leading-relaxed transition-all duration-500 ${
+                    isCenter ? 'text-gray-700' : 'text-gray-600'
+                  }`}>
+                    {value.description}
+                  </p>
+                </div>
+                
+                {/* Gradient overlay for non-center cards */}
+                {!isCenter && (
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl pointer-events-none" />
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Navigation Dots */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3">
+        {values.map((_, index) => (
+          <button
+            key={index}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              index === currentIndex
+                ? 'bg-kopin-teal scale-125 shadow-lg'
+                : 'bg-kopin-teal/40 hover:bg-kopin-teal/60'
+            }`}
+            onClick={() => handleSlideChange(index)}
+          />
+        ))}
+      </div>
+
+      {/* Navigation Arrows */}
+      <button
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-40"
+        onClick={() => handleSlideChange((currentIndex - 1 + values.length) % values.length)}
+      >
+        <svg className="w-6 h-6 text-kopin-green-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <button
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-40"
+        onClick={() => handleSlideChange((currentIndex + 1) % values.length)}
+      >
+        <svg className="w-6 h-6 text-kopin-green-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {/* Auto-play indicator */}
+      <div className="absolute top-4 right-4">
+        <div className={`w-2 h-2 rounded-full ${isAutoPlay ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
+      </div>
     </div>
   );
 };
