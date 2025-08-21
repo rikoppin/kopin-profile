@@ -186,50 +186,7 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Kurikulum Internasional",
-                description: "Akses dan adopsi kurikulum berstandar global",
-                icon: "📚"
-              },
-              {
-                title: "Reputasi Meningkat",
-                description: "Penguatan kredibilitas lembaga di mata publik dan dunia akademik",
-                icon: "🏆"
-              },
-              {
-                title: "Kolaborasi Global",
-                description: "Peluang pertukaran pelajar, riset, dan kemitraan luar negeri",
-                icon: "🌍"
-              },
-              {
-                title: "Pelatihan Guru",
-                description: "Program pengembangan profesional guru dan staf dengan sertifikasi",
-                icon: "👨‍🏫"
-              },
-              {
-                title: "Perluasan Layanan",
-                description: "Membuka peluang ekspansi program internasional dan cabang baru",
-                icon: "🚀"
-              },
-              {
-                title: "Daya Saing Tinggi",
-                description: "Kemampuan menarik siswa lokal maupun internasional serta akses ke pendanaan global",
-                icon: "💪"
-              }
-            ].map((benefit, index) => (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-lg border border-kopin-teal/10 hover:shadow-xl transition-shadow duration-300">
-                <div className="text-4xl mb-4 text-center">{benefit.icon}</div>
-                <h4 className="text-xl font-semibold text-kopin-green-dark mb-3 text-center">
-                  {benefit.title}
-                </h4>
-                <p className="text-gray-600 text-sm leading-relaxed text-center">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
-          </div>
+          <BenefitFlashcards />
         </div>
       </section>
 
@@ -784,6 +741,137 @@ const ValuesSlider = () => {
       <div className="absolute top-4 right-4">
         <div className={`w-2 h-2 rounded-full ${isAutoPlay ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
       </div>
+    </div>
+  );
+};
+
+// BenefitFlashcards Component
+const BenefitFlashcards = () => {
+  const [flippedCards, setFlippedCards] = useState(new Set());
+
+  const benefits = [
+    {
+      title: "Kurikulum Internasional",
+      description: "Akses dan adopsi kurikulum berstandar global dengan sertifikasi internasional yang diakui di seluruh dunia. Memberikan kesempatan kepada siswa untuk bersaing di tingkat global.",
+      icon: "📚"
+    },
+    {
+      title: "Reputasi Meningkat",
+      description: "Penguatan kredibilitas lembaga di mata publik dan dunia akademik melalui kemitraan strategis dengan institusi pendidikan terkemuka di berbagai negara.",
+      icon: "🏆"
+    },
+    {
+      title: "Kolaborasi Global",
+      description: "Peluang pertukaran pelajar, riset, dan kemitraan luar negeri yang membuka wawasan internasional serta memperluas jejaring akademik dan profesional.",
+      icon: "🌍"
+    },
+    {
+      title: "Pelatihan Guru",
+      description: "Program pengembangan profesional guru dan staf dengan sertifikasi yang meningkatkan kompetensi pedagogik dan manajerial sesuai standar internasional.",
+      icon: "👨‍🏫"
+    },
+    {
+      title: "Perluasan Layanan",
+      description: "Membuka peluang ekspansi program internasional dan cabang baru dengan dukungan sistem manajemen yang terintegrasi dan berkelanjutan.",
+      icon: "🚀"
+    },
+    {
+      title: "Daya Saing Tinggi",
+      description: "Kemampuan menarik siswa lokal maupun internasional serta akses ke pendanaan global melalui program beasiswa dan hibah penelitian yang kompetitif.",
+      icon: "💪"
+    }
+  ];
+
+  const handleCardClick = (index) => {
+    setFlippedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {benefits.map((benefit, index) => {
+        const isFlipped = flippedCards.has(index);
+        
+        return (
+          <div
+            key={index}
+            className="relative h-64 cursor-pointer group perspective-1000"
+            onClick={() => handleCardClick(index)}
+          >
+            {/* Card Container */}
+            <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${
+              isFlipped ? 'rotate-y-180' : ''
+            }`}>
+              
+              {/* Front Side */}
+              <div className="absolute inset-0 w-full h-full backface-hidden">
+                <div className={`w-full h-full bg-white rounded-2xl p-6 shadow-lg border border-kopin-teal/10 flex flex-col items-center justify-center text-center transform transition-all duration-300 ${
+                  !isFlipped ? 'group-hover:scale-105 group-hover:shadow-xl group-hover:border-kopin-teal/30 group-hover:-translate-y-2' : ''
+                }`}>
+                  <div className={`text-5xl mb-4 transition-all duration-300 ${
+                    !isFlipped ? 'group-hover:scale-110 group-hover:animate-pulse' : ''
+                  }`}>
+                    {benefit.icon}
+                  </div>
+                  <h4 className={`text-xl font-semibold text-kopin-green-dark mb-2 transition-all duration-300 ${
+                    !isFlipped ? 'group-hover:text-kopin-teal' : ''
+                  }`}>
+                    {benefit.title}
+                  </h4>
+                  <div className={`text-sm text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+                    !isFlipped ? 'group-hover:text-kopin-green' : ''
+                  }`}>
+                    Klik untuk detail
+                  </div>
+                  
+                  {/* Hover Effects */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-kopin-teal/5 to-kopin-green/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  <div className="absolute top-2 right-2 w-3 h-3 bg-kopin-teal rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300" />
+                </div>
+              </div>
+
+              {/* Back Side */}
+              <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
+                <div className="w-full h-full bg-gradient-to-br from-kopin-green to-kopin-teal rounded-2xl p-6 shadow-xl border border-kopin-teal/30 flex flex-col justify-center text-center text-white relative overflow-hidden">
+                  <div className="relative z-10">
+                    <div className="text-3xl mb-3 animate-bounce">
+                      {benefit.icon}
+                    </div>
+                    <h4 className="text-lg font-bold mb-3 text-white">
+                      {benefit.title}
+                    </h4>
+                    <p className="text-sm leading-relaxed text-white/90">
+                      {benefit.description}
+                    </p>
+                    <div className="text-xs text-white/70 mt-3">
+                      Klik lagi untuk kembali
+                    </div>
+                  </div>
+                  
+                  {/* Background Pattern */}
+                  <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-4 left-4 w-8 h-8 border-2 border-white rounded-full" />
+                    <div className="absolute bottom-4 right-4 w-6 h-6 border-2 border-white rounded-full" />
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 border border-white rounded-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Animation on Hover */}
+            <div className={`absolute -inset-1 bg-gradient-to-r from-kopin-teal to-kopin-green rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm ${
+              !isFlipped ? 'group-hover:animate-pulse' : ''
+            }`} />
+          </div>
+        );
+      })}
     </div>
   );
 };
